@@ -1,0 +1,23 @@
+# Core dependencies
+dataclasses-json>=0.5.0
+
+# Optional: RAG evaluation
+# ragas>=0.1.0
+# langchain>=0.1.0
+# langchain-openai>=0.0.5
+# datasets>=2.14.0
+
+# Optional: Text similarity and embeddings
+# sentence-transformers>=2.2.0
+# numpy>=1.24.0
+
+# Optional: Summarization metrics
+# rouge-score>=0.1.2
+# bert-score>=0.3.13
+
+# Optional: Code evaluation
+# tree-sitter>=0.20.0
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
