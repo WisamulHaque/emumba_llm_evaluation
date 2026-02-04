@@ -3,6 +3,7 @@ layout: default
 title: Text Summarization Evaluation
 parent: Use Cases
 nav_order: 3
+permalink: /use-cases/text-summarization/
 ---
 
 # Text Summarization Evaluation
@@ -64,4 +65,4 @@ Text summarization evaluation focuses on:
 
 ---
 
-**← [Chat with API](./chat-with-api.md)** | **[Code Generation →](./code-generation.md)**
+**← [Chat with API](./chat-with-api)** | **[Code Generation →](./code-generation)**

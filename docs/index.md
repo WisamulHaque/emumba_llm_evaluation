@@ -20,10 +20,10 @@ We provide detailed evaluation guidelines for the following use cases:
 
 | Use Case | Description |
 |----------|-------------|
-| [RAG Applications](./use-cases/rag-application.md) | Retrieval-Augmented Generation evaluation |
-| [Chat with API](./use-cases/chat-with-api.md) | Conversational AI API evaluation |
-| [Text Summarization](./use-cases/text-summarization.md) | Document summarization evaluation |
-| [Code Generation](./use-cases/code-generation.md) | Code generation and completion evaluation |
+| [RAG Applications](./use-cases/rag-application) | Retrieval-Augmented Generation evaluation |
+| [Chat with API](./use-cases/chat-with-api) | Conversational AI API evaluation |
+| [Text Summarization](./use-cases/text-summarization) | Document summarization evaluation |
+| [Code Generation](./use-cases/code-generation) | Code generation and completion evaluation |
 
 ## Quick Start
 
@@ -48,8 +48,8 @@ We provide detailed evaluation guidelines for the following use cases:
 
 ## Getting Started with Examples
 
-Check out our [examples](https://github.com/your-org/emumba_llm_evaluation/tree/main/examples) directory for ready-to-use code snippets.
+Check out our [examples](https://github.com/WisamulHaque/emumba_llm_evaluation/tree/main/examples) directory for ready-to-use code snippets.
 
 ---
 
-**Next**: [RAG Application Evaluation →](./use-cases/rag-application.md)
+**Next**: [RAG Application Evaluation →](./use-cases/rag-application)

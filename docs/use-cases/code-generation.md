@@ -3,6 +3,7 @@ layout: default
 title: Code Generation Evaluation
 parent: Use Cases
 nav_order: 4
+permalink: /use-cases/code-generation/
 ---
 
 # Code Generation Evaluation
@@ -61,4 +62,4 @@ Code generation evaluation covers:
 
 ---
 
-**← [Text Summarization](./text-summarization.md)** | **[Home](../index.md)**
+**← [Text Summarization](./text-summarization)** | **[Home](../)**

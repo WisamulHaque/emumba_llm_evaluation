@@ -14,16 +14,16 @@ This section provides detailed evaluation guidelines for specific LLM applicatio
 
 <div class="use-case-grid">
 
-### [RAG Applications](./rag-application.md)
+### [RAG Applications](./rag-application)
 Evaluate Retrieval-Augmented Generation systems for faithfulness, relevance, and retrieval quality.
 
-### [Chat with API](./chat-with-api.md)
+### [Chat with API](./chat-with-api)
 Assess conversational AI systems for response quality, context handling, and safety.
 
-### [Text Summarization](./text-summarization.md)
+### [Text Summarization](./text-summarization)
 Measure summarization quality using ROUGE, BERTScore, and factual consistency metrics.
 
-### [Code Generation](./code-generation.md)
+### [Code Generation](./code-generation)
 Evaluate code generation with Pass@k, test execution, and code quality metrics.
 
 </div>

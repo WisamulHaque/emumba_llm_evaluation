@@ -3,6 +3,7 @@ layout: default
 title: RAG Application Evaluation
 parent: Use Cases
 nav_order: 1
+permalink: /use-cases/rag-application/
 ---
 
 # RAG Application Evaluation
@@ -124,4 +125,4 @@ Check out our code examples for RAG evaluation:
 
 ---
 
-**← [Home](../index.md)** | **[Chat with API →](./chat-with-api.md)**
+**← [Home](../)** | **[Chat with API →](./chat-with-api)**

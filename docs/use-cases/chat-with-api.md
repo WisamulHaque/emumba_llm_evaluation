@@ -3,6 +3,7 @@ layout: default
 title: Chat with API Evaluation
 parent: Use Cases
 nav_order: 2
+permalink: /use-cases/chat-with-api/
 ---
 
 # Chat with API Evaluation
@@ -139,4 +140,4 @@ Chat API evaluation covers:
 
 ---
 
-**← [RAG Application](./rag-application.md)** | **[Text Summarization →](./text-summarization.md)**
+**← [RAG Application](./rag-application)** | **[Text Summarization →](./text-summarization)**
