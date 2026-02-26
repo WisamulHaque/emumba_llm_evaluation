@@ -1,30 +1,19 @@
 # LLM Evaluation Guidelines
 
-A comprehensive guide to evaluating Large Language Models across various use cases.
+A comprehensive guide to evaluating Large Language Models across various application types.
 
-[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://your-org.github.io/emumba_llm_evaluation/)
+[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://WisamulHaque.github.io/emumba_llm_evaluation/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## 📖 Overview
 
-This repository provides guidelines, best practices, and code examples for evaluating LLM applications. Whether you're building RAG systems, chat APIs, or other LLM-powered features, you'll find practical guidance here.
+This repository provides structured evaluation guidelines for LLM-powered applications. Whether you're building RAG systems, multi-agent pipelines, chatbots, or other LLM applications, you'll find evaluation areas and guidance here.
 
 ## 🚀 Quick Start
 
 ### Documentation
 
-Visit our [documentation site](https://your-org.github.io/emumba_llm_evaluation/) for comprehensive guides.
-
-### Code Examples
-
-```bash
-# Clone the repository
-git clone https://github.com/your-org/emumba_llm_evaluation.git
-cd emumba_llm_evaluation
-
-# Run a basic example
-python examples/rag/basic_evaluation.py
-```
+Visit our [documentation site](https://WisamulHaque.github.io/emumba_llm_evaluation/) for comprehensive guides.
 
 ## 📂 Repository Structure
 
@@ -32,56 +21,49 @@ python examples/rag/basic_evaluation.py
 emumba_llm_evaluation/
 ├── docs/                           # Documentation (GitHub Pages)
 │   ├── index.md                    # Home page
-│   └── use-cases/                  # Use case specific guides
-│       ├── rag-application.md      # RAG evaluation guide
-│       ├── chat-with-api.md        # Chat API evaluation guide
-│       ├── text-summarization.md   # Summarization evaluation
-│       └── code-generation.md      # Code generation evaluation
+│   └── use-cases/                  # Evaluation guidelines
+│       └── llm-evaluation-guidelines.md  # Core evaluation areas
 │
 ├── examples/                       # Code examples
 │   ├── rag/                        # RAG evaluation examples
-│   │   ├── basic_evaluation.py     # Simple RAG evaluation
-│   │   └── ragas_evaluation.py     # RAGAS framework integration
 │   ├── chat-api/                   # Chat API evaluation examples
-│   │   ├── chat_evaluation.py      # Basic chat evaluation
-│   │   └── multi_turn_eval.py      # Multi-turn conversation testing
 │   └── common/                     # Shared utilities
-│       └── utils.py                # Common metrics and helpers
 │
 └── README.md                       # This file
 ```
 
-## 📚 Use Cases Covered
+## 📚 LLM Application Categories
 
-| Use Case | Documentation | Examples |
-|----------|--------------|----------|
-| **RAG Applications** | [Guide](docs/use-cases/rag-application.md) | [Code](examples/rag/) |
-| **Chat with API** | [Guide](docs/use-cases/chat-with-api.md) | [Code](examples/chat-api/) |
-| **Text Summarization** | [Guide](docs/use-cases/text-summarization.md) | Coming Soon |
-| **Code Generation** | [Guide](docs/use-cases/code-generation.md) | Coming Soon |
+We evaluate LLM applications across three main categories:
 
-## 🔧 Key Metrics
+| Category | Examples | Documentation |
+|----------|----------|---------------|
+| **Simple LLM Apps (with Data Sources)** | Chat with Documents, Chat with APIs, Chat with Databases | [Guidelines](docs/use-cases/llm-evaluation-guidelines.md) |
+| **Multi-Agent Applications** | Multi-tool orchestration, agent pipelines | [Guidelines](docs/use-cases/llm-evaluation-guidelines.md) |
+| **Simple LLM Apps (without Ground Truth)** | Chatbots, interview bots, coaching assistants | [Guidelines](docs/use-cases/llm-evaluation-guidelines.md) |
 
-### RAG Evaluation
-- **Faithfulness**: Response grounded in retrieved context
-- **Answer Relevance**: Response addresses the query
-- **Context Precision/Recall**: Quality of retrieved documents
+## 🔧 Key Evaluation Areas
 
-### Chat Evaluation
-- **Response Relevance**: Appropriateness of responses
-- **Context Retention**: Multi-turn consistency
-- **Safety**: Toxicity and bias detection
+### Simple LLM Apps (with Data Sources)
+- **Retrieval Accuracy**: Relevance of retrieved information
+- **Response Accuracy & Faithfulness**: Grounded, hallucination-free responses
+- **API/Query Selection Accuracy**: Correct tool and parameter selection
+- **Privacy & Security**: Data masking and injection prevention
+
+### Multi-Agent Applications
+- **Behavioral Accuracy**: Correct journey through agent graph
+- **Tool Call Accuracy**: Right tools with right parameters
+- **Memory & Context Preservation**: No information loss across agents
+
+### Simple LLM Apps (without Ground Truth)
+- **Tonality & Persona Consistency**: Aligned with application purpose
+- **Coherence & Engagement**: Logical, meaningful interactions
+- **Guardrails & Prompt Injection Resistance**: Safety and robustness
 
 ## 📦 Dependencies
 
 ```bash
 pip install -r requirements.txt
-```
-
-Optional dependencies for advanced features:
-```bash
-pip install ragas langchain-openai datasets  # For RAGAS integration
-pip install rouge-score bert-score           # For summarization metrics
 ```
 
 ## 🤝 Contributing

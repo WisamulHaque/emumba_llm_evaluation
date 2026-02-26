@@ -6,39 +6,25 @@ has_children: true
 permalink: /use-cases/
 ---
 
-# Use Cases
+# Evaluation Areas
 
-This section provides detailed evaluation guidelines for specific LLM application types.
+This section provides detailed evaluation guidelines for LLM applications. We categorize LLM applications into three main types, each with its own evaluation strategy.
 
-## Available Guides
+## Application Categories
 
-<div class="use-case-grid">
-
-### [RAG Applications](./rag-application)
-Evaluate Retrieval-Augmented Generation systems for faithfulness, relevance, and retrieval quality.
-
-### [Chat with API](./chat-with-api)
-Assess conversational AI systems for response quality, context handling, and safety.
-
-### [Text Summarization](./text-summarization)
-Measure summarization quality using ROUGE, BERTScore, and factual consistency metrics.
-
-### [Code Generation](./code-generation)
-Evaluate code generation with Pass@k, test execution, and code quality metrics.
-
-</div>
+### [LLM Evaluation Guidelines](./llm-evaluation-guidelines)
+Comprehensive evaluation areas for all types of LLM applications, organized by application category.
 
 ---
 
-## Choosing the Right Evaluation Approach
+## Three Categories of LLM Applications
 
-| If you're building... | Focus on... | Key Metrics |
-|----------------------|-------------|-------------|
-| **RAG System** | Retrieval + Generation | Faithfulness, Context Recall |
-| **Chatbot** | Conversation Flow | Coherence, Safety |
-| **Summarizer** | Content Coverage | ROUGE, Factual Consistency |
-| **Code Assistant** | Correctness | Pass@k, Test Pass Rate |
+| Category | Examples | Key Focus |
+|----------|----------|-----------|
+| **Simple LLM Apps (with Data Sources)** | Chat with Documents, Chat with APIs, Chat with Databases | Grounding responses in external data |
+| **Multi-Agent Applications** | Multi-tool orchestration, agent pipelines | Orchestration correctness and tool usage |
+| **Simple LLM Apps (without Ground Truth)** | Chatbots, interview bots, coaching assistants | Behavioral alignment and persona adherence |
 
 ---
 
-Select a use case from the navigation to get started.
+See the [LLM Evaluation Guidelines](./llm-evaluation-guidelines) for the full breakdown of evaluation areas per category.

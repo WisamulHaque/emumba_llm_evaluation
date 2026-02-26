@@ -14,42 +14,22 @@ Welcome to the **LLM Evaluation Guidelines** repository. This resource provides 
 
 Evaluating LLMs requires a structured approach that considers multiple dimensions of model performance. This guide covers evaluation strategies for different application types, metrics, and best practices.
 
-## Use Cases
+## LLM Application Categories
 
-We provide detailed evaluation guidelines for the following use cases:
+We evaluate LLM applications across three main categories:
 
-| Use Case | Description |
-|----------|-------------|
-| [RAG Applications](./use-cases/rag-application) | Retrieval-Augmented Generation evaluation |
-| [Chat with API](./use-cases/chat-with-api) | Conversational AI API evaluation |
-| [Text Summarization](./use-cases/text-summarization) | Document summarization evaluation |
-| [Code Generation](./use-cases/code-generation) | Code generation and completion evaluation |
+| Category | Examples | Key Focus |
+|----------|----------|-----------|
+| **Simple LLM Apps (with Data Sources)** | Chat with Documents, Chat with APIs, Chat with Databases | Retrieval accuracy, response grounding, data integrity |
+| **Multi-Agent Applications** | Multi-tool orchestration, agent pipelines | Journey validation, tool call accuracy, orchestration |
+| **Simple LLM Apps (without Ground Truth)** | Chatbots, interview bots, coaching assistants | Tonality, persona consistency, behavioral alignment |
 
 ## Quick Start
 
-1. **Choose Your Use Case**: Navigate to the relevant use case documentation
-2. **Review Metrics**: Understand the key metrics for your application
-3. **Implement Evaluation**: Use our code examples to set up your evaluation pipeline
-4. **Iterate**: Continuously improve based on evaluation results
-
-## Repository Structure
-
-```
-├── docs/                    # Documentation (GitHub Pages)
-│   ├── index.md            # Home page
-│   ├── use-cases/          # Use case specific guides
-│   ├── metrics/            # Evaluation metrics documentation
-│   └── best-practices/     # General best practices
-├── examples/               # Code examples
-│   ├── rag/               # RAG evaluation examples
-│   ├── chat-api/          # Chat API evaluation examples
-│   └── common/            # Shared utilities
-```
-
-## Getting Started with Examples
-
-Check out our [examples](https://github.com/WisamulHaque/emumba_llm_evaluation/tree/main/examples) directory for ready-to-use code snippets.
+1. **Identify Your Category**: Determine which of the three categories your application falls into
+2. **Review Evaluation Areas**: Navigate to the [LLM Evaluation Guidelines](./use-cases/llm-evaluation-guidelines) for the full breakdown
+3. **Plan Your Evaluation**: Select the relevant evaluation areas for your specific application
 
 ---
 
-**Next**: [RAG Application Evaluation →](./use-cases/rag-application)
+**Next**: [LLM Evaluation Guidelines →](./use-cases/llm-evaluation-guidelines)
