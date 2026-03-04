@@ -1,0 +1,35 @@
+[
+    {
+        "query_id": 1,
+        "query": "What are Python decorators and how do they work?",
+        "retrieved_chunks": [
+            "Python decorators are functions that modify the behavior of other functions. They use the @decorator syntax and are commonly used for logging, authentication, and caching.",
+            "To create a decorator in Python, define a function that takes another function as an argument and returns a new function.",
+            "Common built-in decorators in Python include @staticmethod, @classmethod, and @property."
+        ],
+        "ground_truth_chunks": [
+            "Python decorators are functions that modify the behavior of other functions. They use the @decorator syntax and are commonly used for logging, authentication, and caching.",
+            "Common built-in decorators in Python include @staticmethod, @classmethod, and @property."
+        ]
+    },
+    {
+        "query_id": 2,
+        "query": "How to optimize machine learning model performance?",
+        "retrieved_chunks": [
+            "Model performance can be improved through hyperparameter tuning. Techniques like grid search and random search help find optimal parameters.",
+            "Feature engineering is crucial for machine learning success. Creating meaningful features from raw data can significantly improve model accuracy.",
+            "Cross-validation helps assess how well a machine learning model generalizes to independent datasets."
+        ],
+        "ground_truth_chunks": []
+    },
+    {
+        "query_id": 3,
+        "query": "How do database indexes improve query performance?",
+        "retrieved_chunks": [
+            "The weather forecast for tomorrow shows sunny skies with temperatures reaching 75 degrees Fahrenheit.",
+            "Recipe for chocolate chip cookies: Mix flour, sugar, and butter. Add chocolate chips and bake at 350 degrees.",
+            "The history of ancient Rome spans over a thousand years, from the founding of the city in 753 BC."
+        ],
+        "ground_truth_chunks": []
+    }
+]

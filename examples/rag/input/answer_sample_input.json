@@ -1,0 +1,64 @@
+[
+  {
+    "query_id": 1,
+    "query": "What are Python decorators and how do they work?",
+    "retrieved_chunks": [
+      "Python decorators modify functions using @syntax.",
+      "They are used for logging, authentication, and caching.",
+      "Built-in decorators: @staticmethod, @classmethod, @property."
+    ],
+    "generated_response": "Python decorators are functions that wrap other functions to modify their behavior. They are applied at definition time using the @decorator syntax. Decorators can be used for logging, authentication, caching, or adding functionality to functions without changing their code. Built-in examples include @staticmethod, @classmethod, and @property.",
+    "ground_truth": "Python decorators wrap other functions using @syntax. Applied at definition time, used for logging, authentication, caching. Built-in examples: @staticmethod, @classmethod, @property."
+  },
+  {
+    "query_id": 2,
+    "query": "What are Python decorators and how do they work?",
+    "retrieved_chunks": [
+      "Python decorators modify functions using @syntax.",
+      "They are used for logging, authentication, and caching."
+    ],
+    "generated_response": "Decorators change how functions behave at runtime. They are mostly used for logging.",
+    "ground_truth": "Python decorators wrap functions and are applied at definition time. Used for logging, authentication, caching."
+  },
+  {
+    "query_id": 3,
+    "query": "How do database indexes improve query performance?",
+    "retrieved_chunks": [
+      "Database indexes speed up data retrieval by avoiding full table scans.",
+      "B-tree indexes are commonly used for range queries and exact matches.",
+      "Indexes add write overhead as they need to be updated on insert/update/delete."
+    ],
+    "generated_response": "Indexes allow databases to find data quickly. B-tree is most common. Hash indexes are also used for ranges.",
+    "ground_truth": "Database indexes speed up data retrieval by avoiding full table scans. B-tree indexes are most common."
+  },
+  {
+    "query_id": 4,
+    "query": "How do database indexes improve query performance?",
+    "retrieved_chunks": [
+      "Database indexes are data structures that improve speed.",
+      "B-tree indexes are most common."
+    ],
+    "generated_response": "Indexes improve performance, but I also like pizza.",
+    "ground_truth": "Database indexes improve performance by avoiding full table scans. B-tree indexes are most common."
+  },
+  {
+    "query_id": 5,
+    "query": "Explain the benefits of using async/await in Python.",
+    "retrieved_chunks": [
+      "Async/await allows writing asynchronous code that is more readable.",
+      "It improves I/O performance by not blocking the main thread."
+    ],
+    "generated_response": "Async/await improves performance by allowing non-blocking I/O operations and makes code easier to read.",
+    "ground_truth": "Using async/await in Python improves readability of asynchronous code and increases I/O efficiency by preventing blocking."
+  },
+  {
+    "query_id": 6,
+    "query": "Explain the benefits of using async/await in Python.",
+    "retrieved_chunks": [
+      "Async/await allows writing asynchronous code that is more readable.",
+      "It improves I/O performance by not blocking the main thread."
+    ],
+    "generated_response": "Async/await lets you run code faster and also helps in multi-threading.",
+    "ground_truth": "Using async/await in Python improves readability of asynchronous code and increases I/O efficiency by preventing blocking."
+  }
+]
