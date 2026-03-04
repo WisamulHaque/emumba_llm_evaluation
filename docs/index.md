@@ -20,14 +20,14 @@ We evaluate LLM applications across three main categories:
 
 | Category | Examples | Key Focus |
 |----------|----------|-----------|
-| **Simple LLM Apps (with Data Sources)** | Chat with Documents, Chat with APIs, Chat with Databases | Retrieval accuracy, response grounding, data integrity |
-| **Multi-Agent Applications** | Multi-tool orchestration, agent pipelines | Journey validation, tool call accuracy, orchestration |
-| **Simple LLM Apps (without Ground Truth)** | Chatbots, interview bots, coaching assistants | Tonality, persona consistency, behavioral alignment |
+| **[Data Source Apps](./use-cases/category-1-data-source-apps)** | Chat with Documents, Chat with APIs, Chat with Databases | Retrieval accuracy, response grounding, data integrity |
+| **[Multi-Agent Apps](./use-cases/category-2-multi-agent-apps)** | Multi-tool orchestration, agent pipelines | Journey validation, tool call accuracy, orchestration |
+| **[No Ground Truth Apps](./use-cases/category-3-no-ground-truth-apps)** | Chatbots, interview bots, coaching assistants | Tonality, persona consistency, behavioral alignment |
 
 ## Quick Start
 
 1. **Identify Your Category**: Determine which of the three categories your application falls into
-2. **Review Evaluation Areas**: Navigate to the [LLM Evaluation Guidelines](./use-cases/llm-evaluation-guidelines) for the full breakdown
+2. **Review Evaluation Areas**: Navigate to the category-specific page above
 3. **Plan Your Evaluation**: Select the relevant evaluation areas for your specific application
 
 ---

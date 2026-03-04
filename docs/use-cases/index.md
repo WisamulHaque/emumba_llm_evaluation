@@ -12,19 +12,25 @@ This section provides detailed evaluation guidelines for LLM applications. We ca
 
 ## Application Categories
 
-### [LLM Evaluation Guidelines](./llm-evaluation-guidelines)
-Comprehensive evaluation areas for all types of LLM applications, organized by application category.
+### [Category 1: Data Source Applications](./category-1-data-source-apps)
+Single-responsibility LLM applications that interact with external data sources — including **Chat with Documents (RAG)**, **Chat with APIs**, and **Chat with Databases**.
+
+### [Category 2: Multi-Agent Applications](./category-2-multi-agent-apps)
+Complex applications composed of multiple specialized agents, tools, and decision pathways with multi-step reasoning.
+
+### [Category 3: No Ground Truth Applications](./category-3-no-ground-truth-apps)
+Applications where no external data source or ground truth exists — including chatbots, interview bots, and coaching assistants.
 
 ---
 
-## Three Categories of LLM Applications
+## Quick Reference
 
 | Category | Examples | Key Focus |
 |----------|----------|-----------|
-| **Simple LLM Apps (with Data Sources)** | Chat with Documents, Chat with APIs, Chat with Databases | Grounding responses in external data |
-| **Multi-Agent Applications** | Multi-tool orchestration, agent pipelines | Orchestration correctness and tool usage |
-| **Simple LLM Apps (without Ground Truth)** | Chatbots, interview bots, coaching assistants | Behavioral alignment and persona adherence |
+| **[Data Source Apps](./category-1-data-source-apps)** | Chat with Documents, Chat with APIs, Chat with Databases | Grounding responses in external data |
+| **[Multi-Agent Apps](./category-2-multi-agent-apps)** | Multi-tool orchestration, agent pipelines | Orchestration correctness and tool usage |
+| **[No Ground Truth Apps](./category-3-no-ground-truth-apps)** | Chatbots, interview bots, coaching assistants | Behavioral alignment and persona adherence |
 
 ---
 
-See the [LLM Evaluation Guidelines](./llm-evaluation-guidelines) for the full breakdown of evaluation areas per category.
+See the [LLM Evaluation Guidelines overview](./llm-evaluation-guidelines) for the full summary.
