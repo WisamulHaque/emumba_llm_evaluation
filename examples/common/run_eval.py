@@ -18,6 +18,7 @@ Available evaluators:
     injection              Prompt injection resistance
     out_of_scope           Out-of-scope query handling
     consistency            Factual and quality consistency across paraphrased queries
+    latency                 Response latency measurement (optional, API key needed)
 
 
 Examples:
@@ -31,6 +32,7 @@ Examples:
     python run_eval.py injection
     python run_eval.py out_of_scope
     python run_eval.py consistency
+    pytho  run_eval.py latency
 
 Configuration:
     Copy .env.example to .env and fill in values for the evaluators you need.
@@ -48,6 +50,7 @@ Output files:
     injection              → results/injection_results.jsonl
     out_of_scope           → results/out_of_scope_results.jsonl
     consistency            → results/consistency_results.jsonl
+    latency                → results/latency_results.jsonl
 """
 
 import argparse
@@ -88,6 +91,7 @@ EVALUATORS = {
     "injection",
     "out_of_scope",
     "consistency",
+    "latency",
 }
 
 
@@ -552,18 +556,93 @@ def run_consistency() -> None:
     print(f"Factual consistency : {factual_passed}/{len(groups)} passed")
     print(f"Quality consistency : {quality_passed}/{len(groups)} passed")
 
+
+# Latency
+def run_latency() -> None:
+    """Latency — threshold check against pre-recorded timings from the application."""
+    from latency_evaluator import LatencyEvaluator, LatencySample
+
+    input_path        = os.environ.get("LATENCY_INPUT")
+    output_path       = os.environ.get("LATENCY_OUTPUT", "examples/common/results/latency_results.jsonl")
+    threshold_ms      = float(os.environ.get("LATENCY_THRESHOLD_MS", "3000"))
+    ttft_threshold_ms = os.environ.get("LATENCY_TTFT_THRESHOLD_MS")
+    ttft_threshold_ms = float(ttft_threshold_ms) if ttft_threshold_ms else None
+
+    _validate_input(input_path, "LATENCY_INPUT")
+    _print_header(
+        "latency", input_path, output_path,
+        Threshold_ms=threshold_ms,
+        TTFT_threshold_ms=ttft_threshold_ms,
+    )
+
+    evaluator    = LatencyEvaluator(
+        threshold_ms=threshold_ms,
+        ttft_threshold_ms=ttft_threshold_ms,
+    )
+
+    samples              = _load_samples(input_path)
+    passed_count         = 0
+    latency_passed_count = 0
+    ttft_evaluated       = 0
+    ttft_passed_count    = 0
+    total_latency_ms     = 0.0
+
+    with _open_output(output_path) as out_file:
+        for i, sample_data in enumerate(samples, 1):
+            sample = LatencySample.from_dict(sample_data)
+            result = evaluator.evaluate_latency(sample)
+
+            _write_record(out_file, {
+                "query_id": sample.query_id,
+                "query":    truncate_text(sample.query, 80),
+                **result,
+            })
+
+            status = "PASS" if result["passed"] else "FAIL"
+            print(f"[{i}/{len(samples)}] {status} | query_id={sample.query_id}")
+            print(f"  Query    : {truncate_text(sample.query, 70)}")
+            print(f"  Latency  : {result['latency_ms']:.0f}ms / {result['threshold_ms']:.0f}ms — {'PASS' if result['latency_passed'] else 'FAIL'}")
+            if result["ttft_ms"] is not None:
+                ttft_status = (
+                    f"{'PASS' if result['ttft_passed'] else 'FAIL'}"
+                    if result["ttft_passed"] is not None
+                    else "no threshold"
+                )
+                print(f"  TTFT     : {result['ttft_ms']:.0f}ms / {result['ttft_threshold_ms'] or '—'}ms — {ttft_status}")
+            print(f"  Reason   : {result['reason']}")
+            print()
+
+            if result["passed"]:          passed_count         += 1
+            if result["latency_passed"]:  latency_passed_count += 1
+            if result["ttft_passed"] is not None:
+                ttft_evaluated += 1
+                if result["ttft_passed"]: ttft_passed_count    += 1
+            total_latency_ms += result["latency_ms"]
+
+    avg_latency = total_latency_ms / len(samples) if samples else 0
+
+    print("-" * 60)
+    print(f"Results saved to : {output_path}")
+    print(f"Summary          : {passed_count}/{len(samples)} passed ({100*passed_count/len(samples):.1f}%)")
+    print(f"Latency passed   : {latency_passed_count}/{len(samples)}")
+    if ttft_evaluated:
+        print(f"TTFT passed      : {ttft_passed_count}/{ttft_evaluated} evaluated")
+    print(f"Avg latency      : {avg_latency:.0f}ms")
+
+
 # Dispatch
 DISPATCH = {
-    "retrieval":             run_retrieval,
-    "response":              run_response,
-    "response_accuracy":     run_response_accuracy,
-    "response_faithfulness": run_response_faithfulness,
-    "response_intent":       run_response_intent,
-    "response_completeness": run_response_completeness,
-    "guardrails":            run_guardrails,
-    "injection":             run_injection,
-    "out_of_scope":          run_out_of_scope,
-    "consistency":           run_consistency,
+    "retrieval":              run_retrieval,
+    "response":               run_response,
+    "response_accuracy":      run_response_accuracy,
+    "response_faithfulness":  run_response_faithfulness,
+    "response_intent":        run_response_intent,
+    "response_completeness":  run_response_completeness,
+    "guardrails":             run_guardrails,
+    "injection":              run_injection,
+    "out_of_scope":           run_out_of_scope,
+    "consistency":            run_consistency,
+    "latency":                run_latency,
 }
 
 
