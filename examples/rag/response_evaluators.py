@@ -7,10 +7,10 @@ here operate on the generated response — they are post-generation checks,
 complementing the pre-generation retrieval_evaluation.py checks.
 
 Evaluators included:
-    - ResponseAccuracyEvaluator: Checks factual accuracy of response against ground truth
+    - AccuracyEvaluator: Checks factual accuracy of response against ground truth
     - FaithfulnessEvaluator:        Every claim in response is supported by retrieved chunks
     - IntentAccuracyEvaluator:      Response fulfills the actual intent of the query
-    - ResponseCompletenessEvaluator: Response covers all relevant aspects of the query
+    - CompletenessEvaluator: Response covers all relevant aspects of the query
 
 Evaluators to be added:
     - CitationAccuracyEvaluator:    Cited sources actually contain the attributed information
@@ -23,30 +23,10 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 import json
 import os
-import re
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
-
-# LLM provider imports — each is optional, error raised only if used
-try:
-    import anthropic as anthropic_sdk
-    _ANTHROPIC_AVAILABLE = True
-except ImportError:
-    _ANTHROPIC_AVAILABLE = False
-
-try:
-    import openai as openai_sdk
-    _OPENAI_AVAILABLE = True
-except ImportError:
-    _OPENAI_AVAILABLE = False
-
-try:
-    from groq import Groq
-    _GROQ_AVAILABLE = True
-except ImportError:
-    _GROQ_AVAILABLE = False
+from examples.common.llm_judge import LLMJudge
 
 
 # Data model
@@ -60,7 +40,7 @@ class ResponseEvaluationSample:
         query:              The user's original question
         retrieved_chunks:   Chunks retrieved from the document store
         generated_response: The LLM's response to evaluate
-        ground_truth:       The expected correct answer (used by ResponseAccuracyEvaluator)
+        ground_truth:       The expected correct answer (used by AccuracyEvaluator)
         metadata:           Optional additional metadata
     """
     query_id: int
@@ -82,145 +62,8 @@ class ResponseEvaluationSample:
             metadata=data.get("metadata", {})
         )
 
-
-# LLM Judge base
-class LLMJudge:
-    """
-    Provider-agnostic LLM judge for evaluation.
-
-    Supports Anthropic, OpenAI, and Groq. Provider and model are configured
-    via .env — no code changes needed to switch between them.
-
-    All judge calls expect the LLM to return a JSON object with:
-        {
-            "score": int,   // 0 or 1
-            "reason": str     // explanation of the verdict
-        }
-    """
-
-    SUPPORTED_PROVIDERS = ("anthropic", "openai", "groq")
-
-    def __init__(self, provider: str, model: str, api_key: str):
-        """
-        Initialize the LLM judge.
-
-        Args:
-            provider: LLM provider — "anthropic", "openai", or "groq"
-            model:    Model name, e.g. "claude-3-haiku-20240307", "gpt-4o-mini", "llama3-8b-8192"
-            api_key:  API key for the provider
-        """
-        self.provider = provider.lower()
-        self.model = model
-        self.api_key = api_key
-        self._client = None
-
-        if self.provider not in self.SUPPORTED_PROVIDERS:
-            raise ValueError(
-                f"Unsupported provider '{provider}'. "
-                f"Choose from: {self.SUPPORTED_PROVIDERS}"
-            )
-        self._validate_provider_installed()
-
-    def _validate_provider_installed(self) -> None:
-        """Raise a clear error if the required SDK is not installed."""
-        if self.provider == "anthropic" and not _ANTHROPIC_AVAILABLE:
-            raise ImportError("Anthropic SDK not installed.\nRun: pip install anthropic")
-        if self.provider == "openai" and not _OPENAI_AVAILABLE:
-            raise ImportError("OpenAI SDK not installed.\nRun: pip install openai")
-        if self.provider == "groq" and not _GROQ_AVAILABLE:
-            raise ImportError("Groq SDK not installed.\nRun: pip install groq")
-
-    def judge(self, prompt: str) -> Dict[str, Any]:
-        """
-        Send a prompt to the configured LLM and parse the JSON response.
-
-        Args:
-            prompt: Full evaluation prompt — should instruct the model to
-                    return only a JSON object with "score" and "reason" keys
-        Returns:
-            Parsed dict with "score" (int) and "reason" (str)
-        Raises:
-            ValueError: If the LLM response cannot be parsed as valid JSON
-        """
-        raw_response = self._call_provider(prompt)
-        return self._parse_response(raw_response)
-    
-    def _get_client(self):
-        """Get or create the LLM client (lazy initialization)."""
-        if self._client is None:
-            if self.provider == "anthropic":
-                self._client = anthropic_sdk.Anthropic(api_key=self.api_key)
-            elif self.provider == "openai":
-                self._client = openai_sdk.OpenAI(api_key=self.api_key)
-            elif self.provider == "groq":
-                self._client = Groq(api_key=self.api_key)
-        return self._client
-
-    def _call_provider(self, prompt: str, max_tokens: int = 256) -> str:
-        """Call the configured provider and return raw text response."""
-        if self.provider == "anthropic":
-            client = self._get_client()
-            message = client.messages.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                temperature=0,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return message.content[0].text
-
-        if self.provider == "openai":
-            client = self._get_client()
-            response = client.chat.completions.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                temperature=0,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return response.choices[0].message.content
-
-        if self.provider == "groq":
-            client = self._get_client()
-            response = client.chat.completions.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                temperature=0,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return response.choices[0].message.content
-
-    def _parse_response(self, raw: str) -> Dict[str, Any]:
-
-        # Strip markdown code fences
-        clean = re.sub(r"```(?:json)?", "", raw).replace("```", "").strip()
-
-        if not clean:
-            raise ValueError(f"LLM returned empty response after stripping fences.\nRaw: {raw}")
-
-        # Use regex to find JSON object
-        match = re.search(r"\{.*\}", clean, re.DOTALL)
-        if not match:
-            raise ValueError(f"No JSON object found in LLM response.\nCleaned: {clean}")
-
-        json_text = match.group(0)
-
-        try:
-            parsed = json.loads(json_text)
-        except json.JSONDecodeError as e:
-            raise ValueError(
-                f"LLM response was not valid JSON.\nExtracted text:\n{json_text}\nOriginal raw:\n{raw}\nError: {e}"
-            )
-
-        # Support expected evaluation formats
-        if ("score" in parsed and "reason" in parsed) or \
-        ("claims" in parsed) or \
-        ("results" in parsed) or \
-        ("passed" in parsed and "reason" in parsed):
-            return parsed
-
-        raise ValueError(f"LLM response missing required keys.\nParsed: {parsed}")
-
-# Response Accuracy Evaluator
-class ResponseAccuracyEvaluator:
+# Accuracy Evaluator
+class AccuracyEvaluator:
     """
     Evaluator for RAG response accuracy.
 
@@ -525,8 +368,8 @@ Respond with ONLY a JSON object in this exact format:
             "reason": result["reason"]
         }
     
-# Response Completeness Evaluator
-class ResponseCompletenessEvaluator:
+# Completeness Evaluator
+class CompletenessEvaluator:
     """
     Evaluator for RAG response completeness.
 

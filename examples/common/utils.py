@@ -5,7 +5,7 @@ Shared utilities, metrics, and helper functions used across
 different evaluation examples.
 """
 
-from typing import List, Dict, Any, Callable, Optional
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 import json
 import time
@@ -24,6 +24,26 @@ def truncate_text(text: str, max_length: int = 60) -> str:
     if len(text) <= max_length:
         return text
     return text[:max_length] + "..."
+
+
+# LLM provider imports — each is optional, error raised only if used
+try:
+    import anthropic as anthropic_sdk
+    _ANTHROPIC_AVAILABLE = True
+except ImportError:
+    _ANTHROPIC_AVAILABLE = False
+
+try:
+    import openai as openai_sdk
+    _OPENAI_AVAILABLE = True
+except ImportError:
+    _OPENAI_AVAILABLE = False
+
+try:
+    from groq import Groq
+    _GROQ_AVAILABLE = True
+except ImportError:
+    _GROQ_AVAILABLE = False
 
 
 @dataclass
