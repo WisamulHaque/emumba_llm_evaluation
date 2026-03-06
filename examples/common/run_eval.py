@@ -17,6 +17,8 @@ Available evaluators:
     guardrails             Harmful/offensive content detection
     injection              Prompt injection resistance
     out_of_scope           Out-of-scope query handling
+    consistency            Factual and quality consistency across paraphrased queries
+
 
 Examples:
     python run_eval.py retrieval
@@ -28,6 +30,7 @@ Examples:
     python run_eval.py guardrails
     python run_eval.py injection
     python run_eval.py out_of_scope
+    python run_eval.py consistency
 
 Configuration:
     Copy .env.example to .env and fill in values for the evaluators you need.
@@ -44,6 +47,7 @@ Output files:
     guardrails             → results/guardrails_results.jsonl
     injection              → results/injection_results.jsonl
     out_of_scope           → results/out_of_scope_results.jsonl
+    consistency            → results/consistency_results.jsonl
 """
 
 import argparse
@@ -72,11 +76,7 @@ except ImportError:
 
 from examples.common.utils import truncate_text
 
-
-# ---------------------------------------------------------------------------
 # Evaluator registry
-# ---------------------------------------------------------------------------
-
 EVALUATORS = {
     "retrieval",
     "response",
@@ -87,13 +87,11 @@ EVALUATORS = {
     "guardrails",
     "injection",
     "out_of_scope",
+    "consistency",
 }
 
 
-# ---------------------------------------------------------------------------
 # Shared helpers
-# ---------------------------------------------------------------------------
-
 def _load_samples(input_path: str) -> list:
     """Load samples from a JSON input file."""
     with open(input_path, 'r', encoding='utf-8') as f:
@@ -151,10 +149,7 @@ def _validate_api_key(api_key: Optional[str], env_var: str) -> None:
         sys.exit(1)
 
 
-# ---------------------------------------------------------------------------
 # Retrieval accuracy
-# ---------------------------------------------------------------------------
-
 def run_retrieval() -> None:
     """Retrieval accuracy — embedding-based cosine similarity."""
     from rag.retrieval_accuracy_evaluator import RetrievalEvaluator, RetrievalEvaluationSample
@@ -183,10 +178,7 @@ def run_retrieval() -> None:
     _print_summary(output_path, passed_count, len(samples))
 
 
-# ---------------------------------------------------------------------------
 # Response evaluations (shared config loader)
-# ---------------------------------------------------------------------------
-
 def _response_config() -> tuple:
     """Load shared config for all response evaluators."""
     return (
@@ -369,10 +361,7 @@ def run_response_completeness() -> None:
 
     _print_summary(output_path, passed_count, len(samples))
 
-# ---------------------------------------------------------------------------
 # Guardrails
-# ---------------------------------------------------------------------------
-
 def run_guardrails() -> None:
     """Guardrails — harmful/offensive content detection."""
     from guardrails_evaluator import GuardrailsEvaluator, GuardrailsSample
@@ -407,10 +396,7 @@ def run_guardrails() -> None:
     _print_summary(output_path, passed_count, len(samples))
 
 
-# ---------------------------------------------------------------------------
 # Prompt injection
-# ---------------------------------------------------------------------------
-
 def run_injection() -> None:
     """Prompt injection resistance — three-layer evaluation."""
     from prompt_injection_evaluator import PromptInjectionEvaluator, PromptInjectionSample, LLMJudge
@@ -459,10 +445,7 @@ def run_injection() -> None:
     print(f"Layer 3 failures : {layer_failures[3]}  (instruction fidelity)")
 
 
-# ---------------------------------------------------------------------------
 # Out of scope
-# ---------------------------------------------------------------------------
-
 def run_out_of_scope() -> None:
     """Out-of-scope accuracy — domain boundary enforcement."""
     from out_of_scope_evaluator import OutOfScopeEvaluator, OutOfScopeSample, LLMJudge
@@ -516,10 +499,60 @@ def run_out_of_scope() -> None:
             print(f"  {cat:<20} : {stats['passed']}/{stats['total']} ({pct:.0f}%)")
 
 
-# ---------------------------------------------------------------------------
-# Dispatch
-# ---------------------------------------------------------------------------
+# Consistency
+def run_consistency() -> None:
+    """Consistency — factual and quality consistency across paraphrased queries."""
+    from consistency_evaluator import ConsistencyEvaluator, ConsistencyGroup, LLMJudge
 
+    input_path  = os.environ.get("CONSISTENCY_INPUT")
+    output_path = os.environ.get("CONSISTENCY_OUTPUT", "results/consistency_results.jsonl")
+    provider    = os.environ.get("CONSISTENCY_PROVIDER", "groq")
+    model       = os.environ.get("CONSISTENCY_MODEL", "llama-3.3-70b-versatile")
+    api_key     = os.environ.get("CONSISTENCY_API_KEY")
+
+    _validate_input(input_path, "CONSISTENCY_INPUT")
+    _validate_api_key(api_key, "CONSISTENCY_API_KEY")
+    _print_header("consistency", input_path, output_path, Provider=provider, Model=model)
+
+    evaluator    = ConsistencyEvaluator(judge=LLMJudge(provider=provider, model=model, api_key=api_key))
+    groups       = _load_samples(input_path)
+    passed_count = 0
+    factual_passed = 0
+    quality_passed = 0
+
+    with _open_output(output_path) as out_file:
+        for i, group_data in enumerate(groups, 1):
+            group  = ConsistencyGroup.from_dict(group_data)
+            result = evaluator.evaluate_consistency(group)
+
+            _write_record(out_file, {
+                "group_id":   group.group_id,
+                "intent":     group.intent,
+                "query_count": len(group.queries),
+                **result,
+            })
+
+            status = "PASS" if result["passed"] else "FAIL"
+            print(f"[{i}/{len(groups)}] {status} | group_id={group.group_id} | queries={len(group.queries)}")
+            print(f"  Intent   : {group.intent}")
+            print(f"  Factual  : {'PASS' if result['factual_consistency']['passed'] else 'FAIL'} — {result['factual_consistency']['reason']}")
+            print(f"  Quality  : {'PASS' if result['quality_consistency']['passed'] else 'FAIL'} — {result['quality_consistency']['reason']}")
+            if result["contradictions"]:
+                for c in result["contradictions"]:
+                    print(f"   ✗ {c}")
+            print()
+
+            if result["passed"]:                              passed_count   += 1
+            if result["factual_consistency"]["passed"]:       factual_passed += 1
+            if result["quality_consistency"]["passed"]:       quality_passed += 1
+
+    print("-" * 60)
+    print(f"Results saved to    : {output_path}")
+    print(f"Summary             : {passed_count}/{len(groups)} passed ({100*passed_count/len(groups):.1f}%)")
+    print(f"Factual consistency : {factual_passed}/{len(groups)} passed")
+    print(f"Quality consistency : {quality_passed}/{len(groups)} passed")
+
+# Dispatch
 DISPATCH = {
     "retrieval":             run_retrieval,
     "response":              run_response,
@@ -530,6 +563,7 @@ DISPATCH = {
     "guardrails":            run_guardrails,
     "injection":             run_injection,
     "out_of_scope":          run_out_of_scope,
+    "consistency":           run_consistency,
 }
 
 
@@ -537,30 +571,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         prog="run_eval.py",
         description="LLM Evaluation Framework — run any evaluator from a single entry point.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-available evaluators:
-  retrieval              Retrieval accuracy (embedding-based, no API key needed)
-  response               All response evaluators combined (accuracy + faithfulness + intent)
-  response_accuracy      Response factual accuracy vs ground truth
-  response_faithfulness  Claim grounding against retrieved chunks
-  response_intent        Whether response fulfills user intent
-  response_completeness  Whether response covers all relevant aspects
-  guardrails             Harmful/offensive content detection
-  injection              Prompt injection resistance (Layers 1+2 free, Layer 3 needs API key)
-  out_of_scope           Out-of-scope query handling
-
-examples:
-  python run_eval.py retrieval
-  python run_eval.py response
-  python run_eval.py response_accuracy
-  python run_eval.py response_faithfulness
-  python run_eval.py response_intent
-  python run_eval.py response_completeness
-  python run_eval.py guardrails
-  python run_eval.py injection
-  python run_eval.py out_of_scope
-        """
+        formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
     parser.add_argument(

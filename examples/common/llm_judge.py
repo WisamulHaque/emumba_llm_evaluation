@@ -136,10 +136,11 @@ class LLMJudge:
         preamble or trailing text.
 
         Supported response formats:
-            {"score": 1, "reason": "..."}         — binary/scored evaluation
-            {"passed": true, "reason": "..."}     — explicit pass/fail
-            {"claims": [...]}                     — faithfulness evaluation
-            {"results": [...]}                    — multi-result evaluation
+            {"score": 1, "reason": "..."}                          — binary/scored evaluation
+            {"passed": true, "reason": "..."}                      — explicit pass/fail
+            {"claims": [...]}                                      — faithfulness evaluation
+            {"results": [...]}                                     — multi-result evaluation
+            {"factual_consistency": {...}, "quality_consistency": {...}}  — consistency evaluation
         """
         # Strip markdown code fences
         clean = re.sub(r"```(?:json)?", "", raw).replace("```", "").strip()
@@ -172,10 +173,11 @@ class LLMJudge:
 
         # Accept any recognized evaluation response format
         if (
-            ("score"  in parsed and "reason" in parsed) or
-            ("passed" in parsed and "reason" in parsed) or
-            ("claims"  in parsed) or
-            ("results" in parsed)
+            ("score"               in parsed and "reason"            in parsed) or
+            ("passed"              in parsed and "reason"            in parsed) or
+            ("claims"              in parsed) or
+            ("results"             in parsed) or
+            ("factual_consistency" in parsed and "quality_consistency" in parsed)
         ):
             return parsed
 
