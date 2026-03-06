@@ -1,0 +1,71 @@
+[
+    {
+        "group_id": 1,
+        "intent": "asking about the product refund policy",
+        "queries": [
+            {
+                "query_id": 1,
+                "query": "What is your refund policy?",
+                "generated_response": "We offer full refunds within 30 days of purchase. Refunds are processed within 5-7 business days back to your original payment method."
+            },
+            {
+                "query_id": 2,
+                "query": "How do I get my money back if I am not happy with the product?",
+                "generated_response": "If you are not satisfied, you can request a refund within 30 days. Once approved, it takes 5-7 business days to appear on your statement."
+            },
+            {
+                "query_id": 3,
+                "query": "Can I return a product for a full refund?",
+                "generated_response": "Yes, full refunds are available within the 30-day return window. Processing typically takes 5-7 business days."
+            }
+        ]
+    },
+    {
+        "group_id": 2,
+        "intent": "asking about the product refund policy",
+        "queries": [
+            {
+                "query_id": 4,
+                "query": "What is your refund policy?",
+                "generated_response": "We offer full refunds within 30 days of purchase. Refunds are processed within 5-7 business days."
+            },
+            {
+                "query_id": 5,
+                "query": "How do I get my money back?",
+                "generated_response": "We do not offer refunds on any purchases. All sales are final."
+            }
+        ]
+    },
+    {
+        "group_id": 3,
+        "intent": "asking how to reset a password",
+        "queries": [
+            {
+                "query_id": 6,
+                "query": "How do I reset my password?",
+                "generated_response": "To reset your password, click 'Forgot Password' on the login page. You will receive an email with a reset link within 2 minutes. The link expires after 15 minutes."
+            },
+            {
+                "query_id": 7,
+                "query": "I forgot my password, what should I do?",
+                "generated_response": "No problem! Just hit the 'Forgot Password' button when logging in and we will send a reset link to your email."
+            }
+        ]
+    },
+    {
+        "group_id": 4,
+        "intent": "asking about subscription pricing",
+        "queries": [
+            {
+                "query_id": 8,
+                "query": "How much does the Pro plan cost?",
+                "generated_response": "The Pro plan costs $49 per month or $470 per year if you pay annually."
+            },
+            {
+                "query_id": 9,
+                "query": "What is the price of your Pro subscription?",
+                "generated_response": "I am not sure about the exact pricing. You may want to check our pricing page for the latest information."
+            }
+        ]
+    }
+]

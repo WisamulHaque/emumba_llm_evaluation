@@ -90,3 +90,5 @@ docs/vendor/
 
 # Node (if using any JS tools)
 node_modules/
+
+results/
