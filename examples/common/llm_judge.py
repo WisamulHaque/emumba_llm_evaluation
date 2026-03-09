@@ -134,13 +134,6 @@ class LLMJudge:
         models wrap JSON in fences despite being instructed not to.
         Uses regex to extract the JSON object in case the model adds
         preamble or trailing text.
-
-        Supported response formats:
-            {"score": 1, "reason": "..."}                          — binary/scored evaluation
-            {"passed": true, "reason": "..."}                      — explicit pass/fail
-            {"claims": [...]}                                      — faithfulness evaluation
-            {"results": [...]}                                     — multi-result evaluation
-            {"factual_consistency": {...}, "quality_consistency": {...}}  — consistency evaluation
         """
         # Strip markdown code fences
         clean = re.sub(r"```(?:json)?", "", raw).replace("```", "").strip()
@@ -175,14 +168,14 @@ class LLMJudge:
         if (
             ("score"               in parsed and "reason"            in parsed) or
             ("passed"              in parsed and "reason"            in parsed) or
+            ("refused"             in parsed and "reason"            in parsed) or
             ("claims"              in parsed) or
-            ("results"             in parsed) or
-            ("factual_consistency" in parsed and "quality_consistency" in parsed)
+            ("results"             in parsed)
         ):
             return parsed
 
         raise ValueError(
             f"LLM response missing required keys.\n"
-            f"Expected one of: score+reason, passed+reason, claims, results.\n"
+            f"Expected one of: score+reason, passed+reason, refused+reason, claims, results.\n"
             f"Parsed: {parsed}"
         )
