@@ -170,12 +170,14 @@ class LLMJudge:
             ("passed"              in parsed and "reason"            in parsed) or
             ("refused"             in parsed and "reason"            in parsed) or
             ("claims"              in parsed) or
-            ("results"             in parsed)
+            ("results"             in parsed) or
+            ("handoffs"            in parsed) or
+            ("failure_events"      in parsed)
         ):
             return parsed
 
         raise ValueError(
             f"LLM response missing required keys.\n"
-            f"Expected one of: score+reason, passed+reason, refused+reason, claims, results.\n"
+            f"Expected one of: score+reason, passed+reason, refused+reason, claims, results, handoffs, failure_events.\n"
             f"Parsed: {parsed}"
         )
