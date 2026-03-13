@@ -48,7 +48,7 @@ class LLMJudge:
         Args:
             provider: LLM provider — "anthropic", "openai", or "groq"
             model:    Model name, e.g. "claude-3-haiku-20240307",
-                      "gpt-4o-mini", "llama-3.3-70b-versatile"
+                      "gpt-4o-mini", "meta-llama/llama-4-scout-17b-16e-instruct"
             api_key:  API key for the provider
         """
         self.provider = provider.lower()
