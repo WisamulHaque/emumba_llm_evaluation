@@ -1,5 +1,5 @@
-title: LLM Evaluation Guidelines
-description: A comprehensive guide to evaluating Large Language Models across various use cases
+title: Gen AI Applications Evaluation Guidelines
+description: A comprehensive guide to evaluating Gen AI applications
 remote_theme: just-the-docs/just-the-docs
 
 # URL settings
@@ -28,21 +28,6 @@ color_scheme: light
 # Back to top link
 back_to_top: true
 back_to_top_text: "Back to top"
-
-# Collections for use cases
-collections:
-  use-cases:
-    permalink: "/:collection/:path/"
-    output: true
-
-# Default front matter
-defaults:
-  - scope:
-      path: "docs/use-cases"
-      type: "pages"
-    values:
-      layout: "default"
-      parent: "Use Cases"
 
 # Aux links (top right)
 aux_links:

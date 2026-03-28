@@ -18,7 +18,7 @@ from typing import Dict, Any
 
 import os
 import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from examples.common.utils import (
     anthropic_sdk, openai_sdk, Groq,
@@ -41,20 +41,23 @@ class LLMJudge:
 
     SUPPORTED_PROVIDERS = ("anthropic", "openai", "groq")
 
-    def __init__(self, provider: str, model: str, api_key: str):
+    def __init__(self, provider: str, model: str, api_key: str, max_tokens: int = 1024):
         """
         Initialize the LLM judge.
 
         Args:
-            provider: LLM provider — "anthropic", "openai", or "groq"
-            model:    Model name, e.g. "claude-3-haiku-20240307",
-                      "gpt-4o-mini", "meta-llama/llama-4-scout-17b-16e-instruct"
-            api_key:  API key for the provider
+            provider:   LLM provider — "anthropic", "openai", or "groq"
+            model:      Model name, e.g. "claude-3-haiku-20240307",
+                        "gpt-4o-mini", "meta-llama/llama-4-scout-17b-16e-instruct"
+            api_key:    API key for the provider
+            max_tokens: Maximum tokens for the judge response (default 1024).
+                        Increase for evaluators that return per-claim result lists.
         """
-        self.provider = provider.lower()
-        self.model    = model
-        self.api_key  = api_key
-        self._client  = None
+        self.provider   = provider.lower()
+        self.model      = model
+        self.api_key    = api_key
+        self.max_tokens = max_tokens
+        self._client    = None
 
         if self.provider not in self.SUPPORTED_PROVIDERS:
             raise ValueError(
@@ -111,7 +114,7 @@ class LLMJudge:
         if self.provider == "anthropic":
             message = client.messages.create(
                 model=self.model,
-                max_tokens=256,
+                max_tokens=self.max_tokens,
                 temperature=0,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -120,7 +123,7 @@ class LLMJudge:
         if self.provider in ("openai", "groq"):
             response = client.chat.completions.create(
                 model=self.model,
-                max_tokens=256,
+                max_tokens=self.max_tokens,
                 temperature=0,
                 messages=[{"role": "user", "content": prompt}]
             )

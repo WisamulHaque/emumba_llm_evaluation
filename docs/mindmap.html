@@ -4,10 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LLM Evaluation Guidelines — Mindmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body, #mindmap { width: 100%; height: 100%; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    }
+    #mindmap { width: 100%; height: 100%; }
+
+    /* ── Markmap node styling via CSS ── */
+
+    /* Make all node text white & readable */
+    .markmap-node foreignObject * {
+      color: #f1f5f9 !important;
+    }
+    .markmap-node foreignObject > div {
+      color: #f1f5f9 !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      line-height: 1.4 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      backdrop-filter: none !important;
+      overflow: visible !important;
+      white-space: nowrap !important;
+    }
+
+    /* Hide the default bottom line under nodes */
+    .markmap-node > line { stroke: transparent !important; }
+
+    /* Style connecting paths */
+    path.markmap-link {
+      stroke-width: 2.5 !important;
+      opacity: 0.5 !important;
+    }
+
+    /* Style expand/collapse circles */
+    .markmap-node > circle {
+      stroke-width: 2px !important;
+      fill: #1e1b4b !important;
+      cursor: pointer !important;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15"></script>
@@ -17,64 +60,141 @@
   <svg id="mindmap"></svg>
   <script>
     const md = `
-# LLM Evaluation Areas
+# LLM Evaluation
 
-## Cat 1: Simple LLM Apps\\n(with Data Sources)
+## 1. Strategy
 
-### 1.1 Chat with Documents (RAG)
-- Retrieval Accuracy
-- Response Accuracy
-- Faithfulness
-- Intent Accuracy
-- Response Completeness
-- Citation Accuracy
-- Conversational Flow
+### Evaluation Methods
+#### Automated
+- LLM as a Judge
+- Rule-Based
+#### Manual
+- Human Review
 
-### 1.2 Chat with APIs
-- API Selection Accuracy
-- Parameter Accuracy
-- Response Formatting
-- Response Completeness
-- Error Handling
-- Privacy & Data Masking
-- Multi-Step Reasoning
+### Test Set Design
+#### Functional Coverage
+- Representative Scenarios (per capability)
+- Variants / Corners (difficulty, modality, persona, prompt style)
+- Negative Controls (graceful refusal)
+#### Robustness & Safety Suite
+- Edge Cases
+- Stress
+- Adversarial Cases (malicious attempts)
 
-### 1.3 Chat with Databases
-- Query Generation Accuracy
-- Schema Understanding
-- Result Accuracy
-- Response Formatting
-- Data Security
+### Dataset Generation
+- Golden Dataset
+- Human-Labeled Data
+- Synthetic Data
+- Real User Data
 
-### 1.4 Common Areas
-- Out-of-Scope Accuracy
-- Guardrails Accuracy
-- Prompt Injection Resistance
+### Evaluation Design
+- Pass / Fail
+- Scoring
+- Human Review
+
+## 2. Accuracy
+
+### Capability Evaluation
+
+#### Response Quality
+- Task Quality
+- Instruction Following
+- Factuality
 - Consistency
-- Latency Awareness
 
-## Cat 2: Multi-Agent\\nApplications
-- Behavioral Accuracy
-- Agent Accuracy
+#### Context Provision Accuracy
+
+##### Context Sourcing
+###### RAG Sourcing
+- Recall
+- Precision
+###### Non-RAG Sourcing (Tools/DB/API)
+- API Selection
+- Parameter Accuracy
+- Query Generation
+
+##### Grounded Accuracy
+- Evidence Use Rate
+- Citation Correctness
+- Unsupported Claim Rate
+- Hallucination Detection
+
+#### Memory
+- Memory Correctness
+- Recall Relevance
+- Update Correctness
+
+#### Agentic Evaluation
 - Tool Call Accuracy
-- Intent Resolution
-- Task Adherence
-- Memory & Context Preservation
-- Orchestration Efficiency
-- Error Recovery & Fallbacks
-- Plan Accuracy
+- Task Adherence & Success
+- Trajectory Quality
+- Plan Quality
+- Safety & Constraints
 
-## Cat 3: Simple LLM Apps\\n(without Ground Truth)
-- Tonality
-- Response Accuracy
-- Persona Consistency
-- Coherence
-- Conversational Flow
-- Engagement Quality
-- Empathy & Emotional Intelligence
-- Out-of-Scope Accuracy
-- Guardrails Accuracy
-- Prompt Injection Resistance
+#### Multi-Modal I/O
+##### Text Interaction
+- Streaming Stability
+- Interaction Responsiveness
+##### Voice
+- ASR Accuracy (WER)
+- Turn-Taking Latency (UTFT)
+- Barge-In Handling
+##### Vision
+- Visual Task Success
+- Grounded Claim Support
+- OCR Accuracy
+##### Cross-Modal Stability
+- Graceful Recovery
+- Safety Compliance
+
+## 3. Performance
+
+### Latency
+- Time to First Token (TTFT)
+- End-to-End Latency
+- Throughput
+- Streaming Stability
+- Responsiveness
+
+### Cost
+- Per Model Call
+- End-to-End Journey Cost
+- Token Usage Efficiency
+
+### Context & Memory Efficiency
+- Context Size vs Quality Curve
+- Memory Size vs Relevance Curve
+
+### Load Testing
+- Concurrency Limit
+- Peak Load Behavior
+
+### Reliability
+- Retry Mechanism
+- Graceful Degradation
+
+## 4. Safety
+
+### Prompt & Output Guardrails
+- Prompt Injection
+- Jailbreaking
+- Policy Compliance
+- Output Constraints Enforcement
+- Ethical Constraints
+
+### Privacy & Data Handling
+- PII Protection
+- Role-Based Access
+
+### Bias & Fairness
+- Demographic Parity
+- Stereotyping Detection
+- Representation Balance
+
+### Content Safety
+- Toxic Output Detection
+- Harmful Content Filtering
+- Sensitive Topic Handling
 `;
 
     const { Transformer } = window.markmap;
@@ -82,11 +202,28 @@
     const { root } = transformer.transform(md);
 
     const { Markmap } = window.markmap;
+
+    const palette = ['#818cf8','#22d3ee','#fbbf24','#f87171','#34d399','#f472b6','#a78bfa','#2dd4bf'];
+    let colorIdx = 0;
+
     const mm = Markmap.create('#mindmap', {
       colorFreezeLevel: 2,
-      initialExpandLevel: 3,
-      maxWidth: 260,
+      initialExpandLevel: 2,
+      maxWidth: 300,
       paddingX: 16,
+      color: (node) => {
+        if (!node.parent) return '#e2e8f0';
+        // Find root branch ancestor
+        let n = node;
+        while (n.parent && n.parent.parent) n = n.parent;
+        if (!n._branchColor) {
+          n._branchColor = palette[colorIdx++ % palette.length];
+        }
+        return n._branchColor;
+      },
+      spacingVertical: 12,
+      spacingHorizontal: 120,
+      autoFit: true,
     }, root);
   </script>
 </body>
